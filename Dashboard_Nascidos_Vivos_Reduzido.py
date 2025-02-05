@@ -2,7 +2,6 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 import squarify
-import psycopg2
 
 
 df_filtro = pd.read_csv("Nascidos_Vivos_Dashboard_Reduzido.csv")
