@@ -26,7 +26,12 @@ df_filtro.drop(columns=["UF"], inplace=True, errors='ignore')
 # Copiar para df principal
 df = df_filtro.copy()
 
-st.set_page_config(layout='wide')
+
+st.set_page_config(
+    page_title="Dashboard de Nascimentos Vivos",
+    page_icon="📊",
+    layout="wide",
+)
 
 #st.title('Nascidos Vivos - 2023')
 
