@@ -63,8 +63,8 @@ with col1:
     # Filtro 1 - Bebê
     with col1_esquerda:
         opcoes_filtro1 = {
-            "Sexo": ["Todos"] + list(df_filtro["Sexo"].dropna().unique()),
             "Raça e Cor": ["Todos"] + list(df_filtro["Raça e Cor"].dropna().unique()),
+            "Sexo": ["Todos"] + list(df_filtro["Sexo"].dropna().unique()),
         }
         filtro_selecionado1 = st.selectbox("Filtros do Bebê:", list(opcoes_filtro1.keys()))
         valor_selecionado1 = st.selectbox(f"Selecione uma opção de {filtro_selecionado1}:", opcoes_filtro1[filtro_selecionado1])
