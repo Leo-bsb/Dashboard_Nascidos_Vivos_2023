@@ -33,19 +33,6 @@ st.set_page_config(
     layout="wide",
 )
 
-st.markdown(
-    """
-    <style>
-        .main {
-            background-color: #ffffff;  # Cor de fundo branca
-        }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
-
-
-
 #faixa azul
 st.markdown(
     """
