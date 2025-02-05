@@ -28,14 +28,25 @@ df = df_filtro.copy()
 
 
 st.set_page_config(
-    page_title="Dashboard de Nascimentos Vivos",
-    page_icon="📊",
+    page_title="Dashboard de Nascidos Vivos",
+    page_icon="📈",
     layout="wide",
 )
 
-#st.title('Nascidos Vivos - 2023')
+st.markdown(
+    """
+    <style>
+        .main {
+            background-color: #ffffff;  # Cor de fundo branca
+        }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
-# Definir estilo CSS para a faixa azul
+
+
+#faixa azul
 st.markdown(
     """
     <style>
@@ -53,7 +64,6 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# Criar a faixa azul com título
 st.markdown('<div class="faixa-azul">Nascidos Vivos - 2023</div>', unsafe_allow_html=True)
 
 
@@ -91,7 +101,7 @@ with col1:
         if valor_selecionado2 != "Todos":
             df = df[df[filtro_selecionado2] == valor_selecionado2]
 
-#####################################################
+################################################
 
     # filtro 3 - Pais
     with col3_esquerda:
@@ -106,29 +116,26 @@ with col1:
 
     st.divider()
 
-#######################################################
+ ######################################################
 
-    # Contagem de nascimentos por UF
+
     contagem = df['Unidade Federativa'].value_counts().reset_index()
     contagem.columns = ['Unidade Federativa', 'quantidade']
-
-    # Ordenar do maior para o menor
     contagem = contagem.sort_values(by='quantidade', ascending=True)
 
-    # Criar gráfico de barras com Plotly
+
     fig_uf = px.bar(
         contagem, 
         x='quantidade', 
         y='Unidade Federativa', 
-        text='quantidade',  # Adiciona rótulos nos valores
-        orientation='h',  # Gráfico de barras horizontal
+        text='quantidade',
+        orientation='h',
         title='Nascimentos por Unidade Federativa',
         labels={'sigla_uf_nome': 'Unidade Federativa', 'quantidade': 'Quantidade de Nascimentos'},
-        color='quantidade',  # Aplica uma cor baseada na quantidade
+        color='quantidade',
         color_continuous_scale='viridis'
     )
 
-    # Ajuste do layout para melhorar visualização
     fig_uf.update_layout(
         xaxis_title='Quantidade de Nascimentos',
         yaxis_title='Unidade Federativa',
@@ -138,10 +145,7 @@ with col1:
         coloraxis_showscale=False
     )
 
-    # Ajustar posição e formato dos rótulos
     fig_uf.update_traces(textposition='outside', texttemplate='%{text}')
-
-    # Exibir no Streamlit
     st.plotly_chart(fig_uf)
 
 
@@ -153,19 +157,14 @@ with col1:
     ] = None 
 
     ordem_consultas = ['Nenhuma consulta', 'de 1 a 3 consultas', 'de 4 a 6 consultas', '7 e mais consultas']
-
-    # Agrupamento e contagem
     contagem = df.groupby(['Escolaridade da Mãe em 2010', 'Pré-Natal de Alto Risco']).size().unstack(fill_value=0)
 
-    # Garantir que todas as categorias existem
     categorias_faltando = [categoria for categoria in ordem_consultas if categoria not in contagem.columns]
     for categoria in categorias_faltando:
-        contagem[categoria] = 0  # Adiciona categoria ausente com valores zerados
+        contagem[categoria] = 0
 
-    # Reordenar colunas na ordem correta
     contagem = contagem[ordem_consultas]
 
-    # Calcular porcentagens
     porcentagem = contagem.div(contagem.sum(axis=1), axis=0) * 100
     porcentagem = porcentagem.reset_index().melt(
         id_vars='Escolaridade da Mãe em 2010', 
@@ -173,7 +172,6 @@ with col1:
         value_name='Porcentagem'
     )
 
-    # Criar gráfico com Plotly
     fig_prenatal = px.line(
         porcentagem, 
         x='Número de Pré-Natais', 
@@ -183,15 +181,12 @@ with col1:
         title='Percentual de Pré-Natais por Escolaridade'
     )
 
-    # Ajustar layout do gráfico
     fig_prenatal.update_layout(
         xaxis_title='Número de Pré-Natais Realizados',
         yaxis_title='Porcentagem de Ocorrências (%)',
         legend_title='Escolaridade',
         template='plotly_white',
     )
-
-    # Exibir no Streamlit
     st.plotly_chart(fig_prenatal)
 
 ##########################################333
