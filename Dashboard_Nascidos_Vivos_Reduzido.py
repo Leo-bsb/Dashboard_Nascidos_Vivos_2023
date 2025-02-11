@@ -11,6 +11,7 @@ df_filtro = pd.read_csv("Nascidos_Vivos_Dashboard_Reduzido.csv")
 df_filtro["Raça e Cor"] = df_filtro["Raça e Cor do Bebê"]
 df_filtro["Unidade Federativa"] = df_filtro["UF"]
 df_filtro.loc[~df_filtro["Raça e Cor"].isin(['Amarela', 'Branca', 'Indígena', 'Parda', 'Preta']), "Raça e Cor"] = None
+df_filtro.loc[~df_filtro["Faixa Etária da Mãe"].isin(['10 a 19', '20 a 24', '25 a 29', '30 a 34', '35 a 39', '40 a 44', '45 a 49', '50 a 100']), "Faixa Etária da Mãe"] = None
 
 
 df_filtro["Estado Civil da Mãe"] = df_filtro["Estado Civil da Mãe"].replace("Separada judicialmente/divorciada", "Divorciada")
@@ -51,7 +52,7 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-st.markdown('<div class="faixa-azul">Nascidos Vivos - 2023</div>', unsafe_allow_html=True)
+st.markdown('<div class="faixa-azul">Nascidos Vivos - SINASC - 2023</div>', unsafe_allow_html=True)
 
 
 col1, col2 = st.columns(2)
@@ -65,6 +66,7 @@ with col1:
         opcoes_filtro1 = {
             "Raça e Cor": ["Todos"] + list(df_filtro["Raça e Cor"].dropna().unique()),
             "Sexo": ["Todos"] + list(df_filtro["Sexo"].dropna().unique()),
+
         }
         filtro_selecionado1 = st.selectbox("Filtros do Bebê:", list(opcoes_filtro1.keys()))
         valor_selecionado1 = st.selectbox(f"Selecione uma opção de {filtro_selecionado1}:", opcoes_filtro1[filtro_selecionado1])
@@ -92,8 +94,12 @@ with col1:
 
     # filtro 3 - Pais
     with col3_esquerda:
+
+        faixas_ordem = ['10 a 19', '20 a 24', '25 a 29', '30 a 34', '35 a 39', '40 a 44', '45 a 49', '50 a 100']
+
         opcoes_filtro3 = {
             "Estado Civil da Mãe": ["Todos"] + list(df_filtro["Estado Civil da Mãe"].dropna().unique()),
+            "Faixa Etária da Mãe": ["Todos"] + [faixa for faixa in faixas_ordem if faixa in df_filtro["Faixa Etária da Mãe"].dropna().unique()],
         }
         filtro_selecionado3 = st.selectbox("Filtros dos Pais:", list(opcoes_filtro3.keys()))
         valor_selecionado3 = st.selectbox(f"Selecione uma opção de {filtro_selecionado3}:", opcoes_filtro3[filtro_selecionado3])
@@ -182,15 +188,15 @@ with col2:
     card1, card2 = st.columns(2)
     with card1:
         st.metric(label="Total de Nascimentos", value=f"{len(df):,}".replace(",", "."))
-        media_idade_mãe = int(round(df['Idade da Mãe'].mean(), 0))
+        media_idade_mãe = int(round(df['Idade da Mãe'].mean(), 0)) if not df.empty else 0
         st.metric(label="Idade Média da Mãe", value=media_idade_mãe)
 
     with card2:
-        media_peso = df["Peso"].mean()
+        media_peso = df["Peso"].mean() if not df.empty else 0
         media_peso_formatada = f"{media_peso:,.0f}".replace(",", "X").replace(",", ",").replace("X", ",")
 
         st.metric(label="Peso Médio do Bebê (Kg)", value=media_peso_formatada)
-        media_idade_pai = int(round(df["Idade do Pai"].mean(), 0))
+        media_idade_pai = int(round(df["Idade do Pai"].mean(), 0)) if not df.empty else 0
         st.metric(label="Idade Média do Pai", value=media_idade_pai)
 
 
@@ -268,4 +274,3 @@ with col2:
                 font=dict(size=15))])
 
     st.plotly_chart(fig_treemap)
-
